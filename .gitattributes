@@ -1,0 +1,13 @@
+## Unity Git Attributes
+
+# Unity YAML files text handling and merge tool
+*.cs diff=csharp text
+*.cginc text
+*.shader text
+*.unity text merge=unityyamlmerge
+*.prefab text merge=unityyamlmerge
+*.asset text merge=unityyamlmerge
+*.meta text merge=unityyamlmerge
+*.mat text merge=unityyamlmerge
+*.anim text merge=unityyamlmerge
+*.controller text merge=unityyamlmerge
