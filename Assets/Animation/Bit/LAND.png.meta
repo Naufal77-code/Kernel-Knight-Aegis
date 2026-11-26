@@ -1,0 +1,392 @@
+fileFormatVersion: 2
+guid: 65d6296cf6a0fc4449f428370aa02b92
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6550192185715924517
+    second: LAND_0
+  - first:
+      213: 5194040988323941756
+    second: LAND_1
+  - first:
+      213: 9100476953204798164
+    second: LAND_2
+  - first:
+      213: 5554776010634560385
+    second: LAND_3
+  - first:
+      213: 1596865737907308271
+    second: LAND_4
+  - first:
+      213: 8365406023109327195
+    second: LAND_5
+  - first:
+      213: 6104697280818366516
+    second: LAND_6
+  - first:
+      213: 6647128512804080522
+    second: LAND_7
+  - first:
+      213: 3226557873526678454
+    second: LAND_8
+  - first:
+      213: 8998428855892527456
+    second: LAND_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LAND_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 236
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52e1328a615f6ea50800000000000000
+      internalID: 6550192185715924517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_1
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 0
+        width: 216
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7d0ed972c0f41840800000000000000
+      internalID: 5194040988323941756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_2
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 0
+        width: 228
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d2b66292936b4e70800000000000000
+      internalID: 9100476953204798164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_3
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 0
+        width: 219
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1830cb8e957861d40800000000000000
+      internalID: 5554776010634560385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_4
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 0
+        width: 200
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe605f59de4392610800000000000000
+      internalID: 1596865737907308271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_5
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 0
+        width: 208
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b593859c474e71470800000000000000
+      internalID: 8365406023109327195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_6
+      rect:
+        serializedVersion: 2
+        x: 1307
+        y: 0
+        width: 223
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 438c87435dd38b450800000000000000
+      internalID: 6104697280818366516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_7
+      rect:
+        serializedVersion: 2
+        x: 1530
+        y: 0
+        width: 201
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8bce061a285f3c50800000000000000
+      internalID: 6647128512804080522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_8
+      rect:
+        serializedVersion: 2
+        x: 1731
+        y: 0
+        width: 210
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b32cca7a4907cc20800000000000000
+      internalID: 3226557873526678454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LAND_9
+      rect:
+        serializedVersion: 2
+        x: 1941
+        y: 0
+        width: 231
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25829}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06949146e57d0ec70800000000000000
+      internalID: 8998428855892527456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      LAND_0: 6550192185715924517
+      LAND_1: 5194040988323941756
+      LAND_2: 9100476953204798164
+      LAND_3: 5554776010634560385
+      LAND_4: 1596865737907308271
+      LAND_5: 8365406023109327195
+      LAND_6: 6104697280818366516
+      LAND_7: 6647128512804080522
+      LAND_8: 3226557873526678454
+      LAND_9: 8998428855892527456
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

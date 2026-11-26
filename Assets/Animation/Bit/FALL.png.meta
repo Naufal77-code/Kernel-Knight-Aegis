@@ -1,0 +1,392 @@
+fileFormatVersion: 2
+guid: 94b188baf575d80408bd98533cadd893
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3492379117222164181
+    second: FALL_0
+  - first:
+      213: -6180858837187291179
+    second: FALL_1
+  - first:
+      213: 4039962346125805866
+    second: FALL_2
+  - first:
+      213: 5321937564572814408
+    second: FALL_3
+  - first:
+      213: -9006318364075240874
+    second: FALL_4
+  - first:
+      213: 2229034229166644018
+    second: FALL_5
+  - first:
+      213: 2717341227216709792
+    second: FALL_6
+  - first:
+      213: -5543495754743858080
+    second: FALL_7
+  - first:
+      213: 1838817167781219642
+    second: FALL_8
+  - first:
+      213: -6535740464411140944
+    second: FALL_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FALL_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 230
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b290bf042b3988fc0800000000000000
+      internalID: -3492379117222164181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_1
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 0
+        width: 218
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d71e9a92ad293aa0800000000000000
+      internalID: -6180858837187291179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_2
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 214
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2948c26954d01830800000000000000
+      internalID: 4039962346125805866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_3
+      rect:
+        serializedVersion: 2
+        x: 662
+        y: 0
+        width: 215
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84c8b25a4025bd940800000000000000
+      internalID: 5321937564572814408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_4
+      rect:
+        serializedVersion: 2
+        x: 877
+        y: 0
+        width: 212
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 652d7375a21230380800000000000000
+      internalID: -9006318364075240874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_5
+      rect:
+        serializedVersion: 2
+        x: 1089
+        y: 0
+        width: 211
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23b1aad42de1fee10800000000000000
+      internalID: 2229034229166644018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_6
+      rect:
+        serializedVersion: 2
+        x: 1300
+        y: 0
+        width: 215
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a8a6c5f27fe5b520800000000000000
+      internalID: 2717341227216709792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_7
+      rect:
+        serializedVersion: 2
+        x: 1515
+        y: 0
+        width: 213
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06c3b945bfb8113b0800000000000000
+      internalID: -5543495754743858080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_8
+      rect:
+        serializedVersion: 2
+        x: 1728
+        y: 0
+        width: 215
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3d4d7cb87ac48910800000000000000
+      internalID: 1838817167781219642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FALL_9
+      rect:
+        serializedVersion: 2
+        x: 1943
+        y: 0
+        width: 229
+        height: 724
+      alignment: 9
+      pivot: {x: 0.5, y: 0.32873}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bc90aaeca26c45a0800000000000000
+      internalID: -6535740464411140944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      FALL_0: -3492379117222164181
+      FALL_1: -6180858837187291179
+      FALL_2: 4039962346125805866
+      FALL_3: 5321937564572814408
+      FALL_4: -9006318364075240874
+      FALL_5: 2229034229166644018
+      FALL_6: 2717341227216709792
+      FALL_7: -5543495754743858080
+      FALL_8: 1838817167781219642
+      FALL_9: -6535740464411140944
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
