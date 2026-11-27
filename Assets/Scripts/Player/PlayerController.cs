@@ -15,16 +15,19 @@ namespace KernelKnight.Player
         [Range(0f, 1f)]
         [SerializeField] private float airControl = 1.0f; // 1.0 = equivalent to ground directional control
 
-        [Header("Jump")]
+        [Header("Jump & Gravity")]
         [SerializeField] private float jumpForce = 14f;
         [SerializeField] private float fallMultiplier = 2.5f;
         [SerializeField] private float lowJumpMultiplier = 2.0f;
+        [SerializeField] private float maxFallSpeed = 19f;
+        [SerializeField] private float apexVelocityThreshold = 2.0f;
+        [SerializeField] private float apexGravityMultiplier = 0.65f;
         [SerializeField] private float coyoteTime = 0.15f;
         [SerializeField] private float jumpBufferTime = 0.15f;
 
         [Header("Dash (Packet-Hop)")]
-        [SerializeField] private float dashSpeed = 20f;
-        [SerializeField] private float dashDuration = 0.16f;
+        [SerializeField] private float dashSpeed = 22f;
+        [SerializeField] private float dashDuration = 0.28f;
         [SerializeField] private float dashCooldown = 0.15f;
         [SerializeField] private bool isInvulnerableDuringDash = false;
 
@@ -38,17 +41,23 @@ namespace KernelKnight.Player
         private SpriteRenderer spriteRenderer;
         private Animator animator;
         private PlayerInputHandler inputHandler;
+        private PlayerHealthController healthController;
         private Collider2D bodyCollider;
 
         // State Properties
         public bool IsGrounded { get; private set; }
         public bool IsDashing { get; private set; }
+        public bool IsInvulnerableDuringDash => isInvulnerableDuringDash;
+        public bool IsMovementLocked => knockbackTimer > 0f || isMovementHalted;
         public int FacingDirection { get; private set; } = 1; // 1 = right, -1 = left
 
         private bool canDash = true;
         private bool hasAirDashed = false;
         private float coyoteCounter;
         private float jumpBufferCounter;
+        private float knockbackTimer;
+        private bool isMovementHalted;
+        private Coroutine activeDashRoutine;
 
         // Animator Hashes
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
@@ -63,6 +72,7 @@ namespace KernelKnight.Player
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
             inputHandler = GetComponent<PlayerInputHandler>();
+            healthController = GetComponent<PlayerHealthController>();
             bodyCollider = GetComponent<Collider2D>();
 
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
@@ -99,8 +109,14 @@ namespace KernelKnight.Player
 
         private void Update()
         {
+            if (healthController != null && healthController.IsDead) return;
             if (inputHandler == null) inputHandler = GetComponent<PlayerInputHandler>();
             if (inputHandler == null) return;
+
+            if (knockbackTimer > 0f)
+            {
+                knockbackTimer -= Time.deltaTime;
+            }
 
             if (IsDashing) return;
 
@@ -115,6 +131,12 @@ namespace KernelKnight.Player
             else
             {
                 coyoteCounter -= Time.deltaTime;
+            }
+
+            if (IsMovementLocked)
+            {
+                UpdateAnimator();
+                return;
             }
 
             // Jump Buffer logic
@@ -133,10 +155,11 @@ namespace KernelKnight.Player
                 ExecuteJump();
             }
 
-            // Dash — Packet-Hop (Snappy & spammable!)
-            if (inputHandler.DashPressed && canDash)
+            // Dash — Packet-Hop (once per airtime, replenished on ground or Pogo)
+            if (inputHandler.DashPressed && canDash && (IsGrounded || !hasAirDashed))
             {
-                StartCoroutine(PerformDashRoutine());
+                if (activeDashRoutine != null) StopCoroutine(activeDashRoutine);
+                activeDashRoutine = StartCoroutine(PerformDashRoutine());
             }
 
             // Facing Direction & Sprite Flip
@@ -157,11 +180,22 @@ namespace KernelKnight.Player
 
         private void FixedUpdate()
         {
+            if (healthController != null && healthController.IsDead)
+            {
+                if (rb != null) rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+                return;
+            }
             if (inputHandler == null || rb == null) return;
             if (IsDashing) return;
 
             ApplyHorizontalMovement();
             ApplyJumpGravityModifiers();
+
+            // Clamp terminal fall velocity
+            if (rb.linearVelocity.y < -maxFallSpeed)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
+            }
         }
 
         private void CheckGround()
@@ -191,24 +225,35 @@ namespace KernelKnight.Player
 
         private void ApplyHorizontalMovement()
         {
+            if (knockbackTimer > 0f) return;
+            if (isMovementHalted)
+            {
+                rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+                return;
+            }
+
             float targetSpeed = inputHandler.MoveInput.x * maxMoveSpeed;
-            float speedDiff = targetSpeed - rb.linearVelocity.x;
 
             // Determine if accelerating or decelerating
             bool isStopping = Mathf.Abs(targetSpeed) < 0.01f;
-            bool isReversing = (Mathf.Sign(targetSpeed) != Mathf.Sign(rb.linearVelocity.x)) && !isStopping;
+            bool isReversing = (Mathf.Sign(targetSpeed) != Mathf.Sign(rb.linearVelocity.x)) && !isStopping && Mathf.Abs(rb.linearVelocity.x) > 0.01f;
 
             float rate = isStopping ? deceleration : (isReversing ? deceleration * 1.25f : acceleration);
             if (!IsGrounded) rate *= airControl;
 
-            float movement = speedDiff * rate * Time.fixedDeltaTime;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x + movement, rb.linearVelocity.y);
+            float newX = Mathf.MoveTowards(rb.linearVelocity.x, targetSpeed, rate * Time.fixedDeltaTime);
+            rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
         }
 
         private void ApplyJumpGravityModifiers()
         {
+            // Apex hang time for responsive Pogo & Packet-Hop timing
+            if (!IsGrounded && Mathf.Abs(rb.linearVelocity.y) < apexVelocityThreshold)
+            {
+                rb.gravityScale = apexGravityMultiplier;
+            }
             // Fall faster for punchy platformer responsiveness
-            if (rb.linearVelocity.y < 0)
+            else if (rb.linearVelocity.y < 0)
             {
                 rb.gravityScale = fallMultiplier;
             }
@@ -220,6 +265,22 @@ namespace KernelKnight.Player
             else
             {
                 rb.gravityScale = 1f;
+            }
+        }
+
+        public void ApplyKnockback(Vector2 velocity, float stunDuration = 0.18f)
+        {
+            if (rb == null) return;
+            knockbackTimer = Mathf.Max(knockbackTimer, stunDuration);
+            rb.linearVelocity = velocity;
+        }
+
+        public void SetMovementHalted(bool halted)
+        {
+            isMovementHalted = halted;
+            if (halted && rb != null && !IsDashing)
+            {
+                rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             }
         }
 
@@ -249,6 +310,26 @@ namespace KernelKnight.Player
 
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
+            activeDashRoutine = null;
+        }
+
+        public void OnPlayerDeath()
+        {
+            if (activeDashRoutine != null)
+            {
+                StopCoroutine(activeDashRoutine);
+                activeDashRoutine = null;
+            }
+
+            IsDashing = false;
+            canDash = false;
+            if (animator != null) animator.SetBool(IsDashingHash, false);
+
+            if (rb != null)
+            {
+                rb.gravityScale = 1f;
+                rb.linearVelocity = new Vector2(0f, Mathf.Min(rb.linearVelocity.y, 0f));
+            }
         }
 
         public void OnPogoSuccessful()

@@ -13,23 +13,29 @@ namespace KernelKnight.Editor
     [InitializeOnLoad]
     public static class SetupBitArenaTool
     {
-        private const string PrefKey = "BitArena_Setup_V26";
+        private const string PrefKey = "BitArena_Setup_V40";
 
-        // Exact cut boundaries at the empty transparent gaps between characters (guaranteed zero-bleed)
+        // Exact cut boundaries at the empty transparent gaps between characters (trimmed to used frames only)
         private static readonly Dictionary<string, int[]> PreciseCuts = new Dictionary<string, int[]>
         {
-            { "DASH.png", new int[] { 0, 141, 312, 491, 667, 908, 1094, 1297, 1434, 1596, 1774 } },
+            { "DASH.png", new int[] { 0, 241, 427, 630 } },
             { "DEATH.png", new int[] { 0, 239, 454, 672, 885, 1086, 1295, 1506, 1718, 1935, 2172 } },
-            { "FALL.png", new int[] { 0, 230, 448, 662, 877, 1089, 1300, 1515, 1728, 1943, 2172 } },
+            { "FALL.png", new int[] { 0, 211 } },
             { "HEAL.png", new int[] { 0, 181, 404, 627, 855, 1072, 1280, 1510, 1752, 1945, 2172 } },
             { "HURT.png", new int[] { 0, 164, 333, 512, 694, 874, 1052, 1244, 1435, 1608, 1774 } },
             { "IDLE.png", new int[] { 0, 248, 462, 675, 891, 1105, 1288, 1508, 1717, 1932, 2172 } },
-            { "JUMP.png", new int[] { 0, 220, 443, 645, 856, 1066, 1278, 1491, 1709, 1932, 2172 } },
+            { "JUMP.png", new int[] { 0, 202, 413, 623, 835 } },
             { "LAND.png", new int[] { 0, 236, 452, 680, 899, 1099, 1307, 1530, 1731, 1941, 2172 } },
             { "LOOKUP.png", new int[] { 0, 256, 488, 707, 919, 1139, 1348, 1556, 1767, 1964, 2172 } },
-            { "POGO.png", new int[] { 0, 177, 354, 520, 703, 866, 1039, 1274, 1439, 1600, 1774 } },
+            { "POGO.png", new int[] { 0, 173, 408 } },
             { "RUN.png", new int[] { 0, 248, 468, 683, 896, 1114, 1328, 1547, 1755, 1951, 2172 } },
-            { "SLASH.png", new int[] { 0, 153, 332, 502, 681, 928, 1130, 1280, 1450, 1608, 1774 } },
+            { "SLASH.png", new int[] { 0, 179, 426, 628, 778 } },
+            { "SLASHSTART.png", new int[] { 0, 892 } },
+            { "SLASH_2.png", new int[] { 0, 797 } },
+            { "SLASH 1.png", new int[] { 0, 2085 } },
+            { "SLASH_4.png", new int[] { 0, 1184 } },
+            { "SLASHEND.png", new int[] { 0, 2280 } },
+            { "SLASH_6.png", new int[] { 0, 694 } },
             { "WALK.png", new int[] { 0, 190, 373, 532, 711, 877, 1057, 1220, 1394, 1569, 1774 } }
         };
 
@@ -48,14 +54,35 @@ namespace KernelKnight.Editor
             { "POGO.png", 0.26719f }, // Anchored at POGO_5 plunge
             { "RUN.png", 0.35773f },
             { "SLASH.png", 0.38444f },
+            { "SLASHSTART.png", 0.02132f },
+            { "SLASH_2.png", 0.03462f },
+            { "SLASH 1.png", 0.02520f },
+            { "SLASH_4.png", 0.04132f },
+            { "SLASHEND.png", 0.02517f },
+            { "SLASH_6.png", 0.03918f },
             { "WALK.png", 0.40135f }
+        };
+
+        private static readonly Dictionary<string, float> FeetPivotX = new Dictionary<string, float>
+        {
+            { "SLASHSTART.png", 0.70631f },
+            { "SLASH_2.png", 0.45044f },
+            { "SLASH 1.png", 0.30474f },
+            { "SLASH_4.png", 0.30828f },
+            { "SLASHEND.png", 0.27837f },
+            { "SLASH_6.png", 0.51441f }
+        };
+
+        private static readonly Dictionary<string, float[]> FeetPivotYPerFrame = new Dictionary<string, float[]>
+        {
+            { "JUMP.png", new float[] { 0.28039f, 0.38674f, 0.49586f, 0.54834f } }
         };
 
         // Adaptive PPU to ensure Bit's world-space character size is 100% uniform across ALL actions
         private static readonly Dictionary<string, float> TexturePPU = new Dictionary<string, float>
         {
             { "IDLE.png", 100f },
-            { "RUN.png", 100f },
+            { "RUN.png", 88f }, // Scales 168px leaning run pose to ~1.91 units matching Idle
             { "DEATH.png", 100f },
             { "FALL.png", 100f },
             { "HEAL.png", 100f },
@@ -63,7 +90,13 @@ namespace KernelKnight.Editor
             { "LAND.png", 100f },
             { "LOOKUP.png", 100f },
             { "SLASH.png", 68.7f }, // Scales 134px attack pose to match 195px Idle
-            { "DASH.png", 65.6f },
+            { "SLASHSTART.png", 478f },
+            { "SLASH_2.png", 268f },
+            { "SLASH 1.png", 477f },
+            { "SLASH_4.png", 249f },
+            { "SLASHEND.png", 477f },
+            { "SLASH_6.png", 252f },
+            { "DASH.png", 62f },
             { "HURT.png", 71.3f },
             { "POGO.png", 73.3f },
             { "WALK.png", 69.2f }
@@ -72,7 +105,7 @@ namespace KernelKnight.Editor
         private static readonly string[] BitFiles = {
             "DASH.png", "DEATH.png", "FALL.png", "HEAL.png", "HURT.png",
             "IDLE.png", "JUMP.png", "JUMP1.png", "LAND.png", "LOOKUP.png",
-            "POGO.png", "RUN.png", "SLASH.png", "WALK.png"
+            "POGO.png", "RUN.png", "SLASH.png", "SLASHSTART.png", "SLASH_2.png", "SLASH 1.png", "SLASH_4.png", "SLASHEND.png", "SLASH_6.png", "WALK.png"
         };
 
         static SetupBitArenaTool()
@@ -188,40 +221,37 @@ namespace KernelKnight.Editor
             var runClip    = CreateAnimationClip("Bit_Run", spriteDict.GetValueOrDefault("RUN"), 14f, true);
             var walkClip   = CreateAnimationClip("Bit_Walk", spriteDict.GetValueOrDefault("WALK"), 12f, true);
 
-            // User requirement: Peak frames (frame 5 or 6) for snappy platformer responsiveness
-            var jumpSprites = spriteDict.GetValueOrDefault("JUMP");
-            Sprite[] airborneJumpSprites = (jumpSprites != null && jumpSprites.Length > 5)
-                ? new Sprite[] { jumpSprites[5] }
-                : jumpSprites;
-            var jumpClip   = CreateAnimationClip("Bit_Jump", airborneJumpSprites, 10f, true);
+            // Rising Jump (4 key frames: launch -> rise -> high -> apex) and Dash (3 key frames: start -> burst -> apex)
+            var jumpClip   = CreateAnimationClip("Bit_Jump", spriteDict.GetValueOrDefault("JUMP"), 16f, false);
+            var fallClip   = CreateAnimationClip("Bit_Fall", spriteDict.GetValueOrDefault("FALL"), 10f, true);
+            var dashClip   = CreateAnimationClip("Bit_Dash", spriteDict.GetValueOrDefault("DASH"), 11f, false);
 
-            var fallSprites = spriteDict.GetValueOrDefault("FALL");
-            Sprite[] airborneFallSprites = (fallSprites != null && fallSprites.Length > 5)
-                ? new Sprite[] { fallSprites[5] }
-                : fallSprites;
-            var fallClip   = CreateAnimationClip("Bit_Fall", airborneFallSprites, 10f, true);
-
-            var dashSprites = spriteDict.GetValueOrDefault("DASH");
-            Sprite[] apexDashSprites = (dashSprites != null && dashSprites.Length > 5)
-                ? new Sprite[] { dashSprites[5] }
-                : dashSprites;
-            var dashClip   = CreateAnimationClip("Bit_Dash", apexDashSprites, 10f, true);
-
+            var rawSlashStart = spriteDict.GetValueOrDefault("SLASHSTART");
+            var rawSlash2 = spriteDict.GetValueOrDefault("SLASH_2");
+            var rawSlash1 = spriteDict.GetValueOrDefault("SLASH 1");
+            var rawSlash4 = spriteDict.GetValueOrDefault("SLASH_4");
+            var rawSlashEnd = spriteDict.GetValueOrDefault("SLASHEND");
+            var rawSlash6 = spriteDict.GetValueOrDefault("SLASH_6");
             var rawSlash = spriteDict.GetValueOrDefault("SLASH");
-            Sprite[] peakSlashSprites = (rawSlash != null && rawSlash.Length >= 7)
-                ? new Sprite[] { rawSlash[4], rawSlash[5], rawSlash[6] }
-                : rawSlash;
-            var slashClip  = CreateAnimationClip("Bit_Slash", peakSlashSprites, 24f, false);
 
-            var rawPogo = spriteDict.GetValueOrDefault("POGO");
-            Sprite[] peakPogoSprites = (rawPogo != null && rawPogo.Length >= 7)
-                ? new Sprite[] { rawPogo[5], rawPogo[6] }
-                : rawPogo;
-            var pogoClip   = CreateAnimationClip("Bit_Pogo", peakPogoSprites, 16f, false);
+            var slashList = new List<Sprite>();
+            if (rawSlashStart != null && rawSlashStart.Length > 0) slashList.Add(rawSlashStart[0]);
+            if (rawSlash2 != null && rawSlash2.Length > 0) slashList.Add(rawSlash2[0]);
+            if (rawSlash1 != null && rawSlash1.Length > 0) slashList.Add(rawSlash1[0]);
+            if (rawSlash4 != null && rawSlash4.Length > 0) slashList.Add(rawSlash4[0]);
+            if (rawSlashEnd != null && rawSlashEnd.Length > 0) slashList.Add(rawSlashEnd[0]);
+            if (rawSlash6 != null && rawSlash6.Length > 0) slashList.Add(rawSlash6[0]);
+
+            Sprite[] slashSprites = (slashList.Count > 0)
+                ? slashList.ToArray()
+                : ((rawSlash != null && rawSlash.Length >= 4) ? new Sprite[] { rawSlash[1], rawSlash[2], rawSlash[3] } : rawSlash);
+            var slashClip  = CreateAnimationClip("Bit_Slash", slashSprites, 18f, false);
+
+            var pogoClip   = CreateAnimationClip("Bit_Pogo", spriteDict.GetValueOrDefault("POGO"), 16f, false);
 
             // Defensive Parry guard stance (Bit raises needle ready in front)
-            Sprite[] parrySprites = (rawSlash != null && rawSlash.Length >= 2)
-                ? new Sprite[] { rawSlash[1] }
+            Sprite[] parrySprites = (rawSlash != null && rawSlash.Length >= 1)
+                ? new Sprite[] { rawSlash[0] }
                 : rawSlash;
             var parryClip  = CreateAnimationClip("Bit_Parry", parrySprites, 8f, false);
 
@@ -229,8 +259,8 @@ namespace KernelKnight.Editor
             var landClip   = CreateAnimationClip("Bit_Land", spriteDict.GetValueOrDefault("LAND"), 14f, false);
             var lookupClip = CreateAnimationClip("Bit_LookUp", spriteDict.GetValueOrDefault("LOOKUP"), 10f, true);
             var healClip   = CreateAnimationClip("Bit_Heal", spriteDict.GetValueOrDefault("HEAL"), 10f, true);
-            var hurtClip   = CreateAnimationClip("Bit_Hurt", spriteDict.GetValueOrDefault("HURT"), 12f, false);
-            var deathClip  = CreateAnimationClip("Bit_Death", spriteDict.GetValueOrDefault("DEATH"), 10f, false);
+            var hurtClip   = CreateAnimationClip("Bit_Hurt", spriteDict.GetValueOrDefault("HURT"), 24f, false);
+            var deathClip  = CreateAnimationClip("Bit_Death", spriteDict.GetValueOrDefault("DEATH"), 6f, false);
 
             // Create Animator Controller
             string controllerPath = "Assets/Animation/Bit/Bit_Controller.controller";
@@ -244,10 +274,13 @@ namespace KernelKnight.Editor
             controller.AddParameter("IsParrying", AnimatorControllerParameterType.Bool);
             controller.AddParameter("IsLookingUp", AnimatorControllerParameterType.Bool);
             controller.AddParameter("IsHealing", AnimatorControllerParameterType.Bool);
+            controller.AddParameter("IsHurting", AnimatorControllerParameterType.Bool);
+            controller.AddParameter("IsDead", AnimatorControllerParameterType.Bool);
             controller.AddParameter("Slash", AnimatorControllerParameterType.Trigger);
             controller.AddParameter("Pogo", AnimatorControllerParameterType.Trigger);
             controller.AddParameter("Parry", AnimatorControllerParameterType.Trigger);
             controller.AddParameter("Hurt", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("Death", AnimatorControllerParameterType.Trigger);
 
             var sm = controller.layers[0].stateMachine;
 
@@ -263,6 +296,7 @@ namespace KernelKnight.Editor
             var healState   = sm.AddState("Heal");   healState.motion = healClip;
             var lookupState = sm.AddState("LookUp"); lookupState.motion = lookupClip;
             var hurtState   = sm.AddState("Hurt");   hurtState.motion = hurtClip;
+            var deathState  = sm.AddState("Death");  deathState.motion = deathClip;
 
             // Idle <-> Run
             var i2r = idleState.AddTransition(runState);
@@ -273,22 +307,28 @@ namespace KernelKnight.Editor
             r2i.hasExitTime = false; r2i.duration = 0f;
             r2i.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
 
-            // Jump / Fall (shielded from interrupting Attack, Dash, or Parry!)
+            // Jump / Fall (shielded from interrupting Attack, Dash, or Parry, and no self-reset!)
             var any2Jump = sm.AddAnyStateTransition(jumpState);
             any2Jump.hasExitTime = false; any2Jump.duration = 0f;
+            any2Jump.canTransitionToSelf = false;
             any2Jump.AddCondition(AnimatorConditionMode.IfNot, 0, "IsGrounded");
             any2Jump.AddCondition(AnimatorConditionMode.Greater, 0.1f, "VerticalVelocity");
             any2Jump.AddCondition(AnimatorConditionMode.IfNot, 0, "IsDashing");
             any2Jump.AddCondition(AnimatorConditionMode.IfNot, 0, "IsAttacking");
             any2Jump.AddCondition(AnimatorConditionMode.IfNot, 0, "IsParrying");
+            any2Jump.AddCondition(AnimatorConditionMode.IfNot, 0, "IsHurting");
+            any2Jump.AddCondition(AnimatorConditionMode.IfNot, 0, "IsDead");
 
             var any2Fall = sm.AddAnyStateTransition(fallState);
             any2Fall.hasExitTime = false; any2Fall.duration = 0f;
+            any2Fall.canTransitionToSelf = false;
             any2Fall.AddCondition(AnimatorConditionMode.IfNot, 0, "IsGrounded");
             any2Fall.AddCondition(AnimatorConditionMode.Less, -0.1f, "VerticalVelocity");
             any2Fall.AddCondition(AnimatorConditionMode.IfNot, 0, "IsDashing");
             any2Fall.AddCondition(AnimatorConditionMode.IfNot, 0, "IsAttacking");
             any2Fall.AddCondition(AnimatorConditionMode.IfNot, 0, "IsParrying");
+            any2Fall.AddCondition(AnimatorConditionMode.IfNot, 0, "IsHurting");
+            any2Fall.AddCondition(AnimatorConditionMode.IfNot, 0, "IsDead");
 
             var f2l = fallState.AddTransition(landState);
             f2l.hasExitTime = false; f2l.duration = 0f;
@@ -297,9 +337,10 @@ namespace KernelKnight.Editor
             var l2i = landState.AddTransition(idleState);
             l2i.hasExitTime = true; l2i.exitTime = 0.6f; l2i.duration = 0.05f;
 
-            // Dash (Packet-Hop)
+            // Dash (Packet-Hop) - canTransitionToSelf=false so all 3 dash effect frames play!
             var any2Dash = sm.AddAnyStateTransition(dashState);
             any2Dash.hasExitTime = false; any2Dash.duration = 0f;
+            any2Dash.canTransitionToSelf = false;
             any2Dash.AddCondition(AnimatorConditionMode.If, 0, "IsDashing");
 
             var dash2Idle = dashState.AddTransition(idleState);
@@ -355,13 +396,22 @@ namespace KernelKnight.Editor
             heal2I.hasExitTime = false; heal2I.duration = 0.05f;
             heal2I.AddCondition(AnimatorConditionMode.IfNot, 0, "IsHealing");
 
-            // Hurt
+            // Hurt (blocked while dead, repeatable on consecutive hits)
             var any2Hurt = sm.AddAnyStateTransition(hurtState);
             any2Hurt.hasExitTime = false; any2Hurt.duration = 0f;
+            any2Hurt.canTransitionToSelf = true;
             any2Hurt.AddCondition(AnimatorConditionMode.If, 0, "Hurt");
+            any2Hurt.AddCondition(AnimatorConditionMode.IfNot, 0, "IsDead");
 
             var hurt2Idle = hurtState.AddTransition(idleState);
-            hurt2Idle.hasExitTime = true; hurt2Idle.exitTime = 0.7f; hurt2Idle.duration = 0.05f;
+            hurt2Idle.hasExitTime = false; hurt2Idle.duration = 0.03f;
+            hurt2Idle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsHurting");
+
+            // Death (slow, dramatic, stays on final frame with NO exit transition)
+            var any2Death = sm.AddAnyStateTransition(deathState);
+            any2Death.hasExitTime = false; any2Death.duration = 0f;
+            any2Death.canTransitionToSelf = false;
+            any2Death.AddCondition(AnimatorConditionMode.If, 0, "Death");
 
             EditorUtility.SetDirty(controller);
             return controller;
@@ -373,8 +423,9 @@ namespace KernelKnight.Editor
             if (importer == null) return;
 
             string fileName = Path.GetFileName(path);
-            int width = (fileName == "DASH.png" || fileName == "HURT.png" || fileName == "POGO.png" || fileName == "SLASH.png" || fileName == "WALK.png") ? 1774 : 2172;
-            int height = (fileName == "DASH.png" || fileName == "HURT.png" || fileName == "POGO.png" || fileName == "SLASH.png" || fileName == "WALK.png") ? 887 : 724;
+            importer.GetSourceTextureWidthAndHeight(out int width, out int height);
+            if (width <= 0) width = (fileName == "DASH.png" || fileName == "HURT.png" || fileName == "POGO.png" || fileName == "SLASH.png" || fileName == "WALK.png") ? 1774 : 2172;
+            if (height <= 0) height = (fileName == "DASH.png" || fileName == "HURT.png" || fileName == "POGO.png" || fileName == "SLASH.png" || fileName == "WALK.png") ? 887 : 724;
 
             importer.isReadable = true;
             importer.textureType = TextureImporterType.Sprite;
@@ -385,22 +436,26 @@ namespace KernelKnight.Editor
             importer.alphaIsTransparency = true;
 
             int[] cuts = PreciseCuts.ContainsKey(fileName) ? PreciseCuts[fileName] : null;
-            float pivotY = FeetPivotY.ContainsKey(fileName) ? FeetPivotY[fileName] : 0.5f;
+            float pivotX = FeetPivotX.ContainsKey(fileName) ? FeetPivotX[fileName] : 0.5f;
+            float defaultPivotY = FeetPivotY.ContainsKey(fileName) ? FeetPivotY[fileName] : 0.5f;
+            float[] perFramePivotY = FeetPivotYPerFrame.ContainsKey(fileName) ? FeetPivotYPerFrame[fileName] : null;
             string baseName = Path.GetFileNameWithoutExtension(path);
 
+            int sliceCount = (cuts != null) ? cuts.Length - 1 : 10;
             var metaList = new List<SpriteMetaData>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < sliceCount; i++)
             {
                 int x0 = (cuts != null) ? cuts[i] : Mathf.RoundToInt(i * (width / 10f));
                 int x1 = (cuts != null) ? cuts[i + 1] : Mathf.RoundToInt((i + 1) * (width / 10f));
                 int w = x1 - x0;
+                float py = (perFramePivotY != null && i < perFramePivotY.Length) ? perFramePivotY[i] : defaultPivotY;
 
                 var meta = new SpriteMetaData
                 {
                     name = $"{baseName}_{i}",
                     rect = new Rect(x0, 0, w, height),
                     alignment = (int)SpriteAlignment.Custom,
-                    pivot = new Vector2(0.5f, pivotY)
+                    pivot = new Vector2(pivotX, py)
                 };
                 metaList.Add(meta);
             }
@@ -547,6 +602,7 @@ namespace KernelKnight.Editor
             bit.AddComponent<PlayerInputHandler>();
             bit.AddComponent<PlayerController>();
             bit.AddComponent<PlayerCombatController>();
+            bit.AddComponent<PlayerHealthController>();
 
             var cam = Camera.main ?? Object.FindFirstObjectByType<Camera>();
             if (cam != null)

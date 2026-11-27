@@ -12,8 +12,10 @@ namespace KernelKnight.Player
     {
         [Header("Cleanse-Needle (Basic Attack)")]
         [SerializeField] private float attackDamage = 20f;
-        [SerializeField] private float attackCooldown = 0.15f;
-        [SerializeField] private float attackActiveDuration = 0.10f;
+        [SerializeField] private float attackCooldown = 0.25f;
+        [SerializeField] private float attackActiveDuration = 0.16f;
+        [SerializeField] private float attackRecoilForce = 3.5f;
+        [SerializeField] private float attackRecoilDuration = 0.08f;
         [SerializeField] private Vector2 forwardHitboxSize = new Vector2(1.6f, 1.0f);
         [SerializeField] private Vector2 forwardHitboxOffset = new Vector2(0.9f, 0.95f);
         [SerializeField] private Vector2 upHitboxSize = new Vector2(1.2f, 1.5f);
@@ -34,6 +36,7 @@ namespace KernelKnight.Player
         [SerializeField] private float parryActiveDuration = 0.18f;
         [SerializeField] private float parryRecoveryDuration = 0.06f;
         [SerializeField] private float parryCooldown = 0.12f;
+        [SerializeField] private bool useParryColorTint = false;
 
         [Header("Counterattack Window")]
         [SerializeField] private float counterattackWindowDuration = 1.2f;
@@ -46,6 +49,7 @@ namespace KernelKnight.Player
         // Components
         private PlayerController playerController;
         private PlayerInputHandler inputHandler;
+        private PlayerHealthController healthController;
         private Rigidbody2D rb;
         private SpriteRenderer spriteRenderer;
         private Animator animator;
@@ -60,7 +64,11 @@ namespace KernelKnight.Player
         public enum AttackDirection { Forward, Up, Down, Pogo }
         public AttackDirection LastAttackDirection { get; private set; }
 
+        public bool IsAttacking => isAttacking;
+        public event System.Action OnAttackHitEnemy;
+
         private bool isAttacking;
+        private bool isCounterattacking;
         private float lastAttackTime;
         private float lastParryTime;
         private float attackBufferCounter;
@@ -68,9 +76,14 @@ namespace KernelKnight.Player
         private readonly HashSet<Collider2D> alreadyHitColliders = new HashSet<Collider2D>();
         private Coroutine activeAttackRoutine;
         private Coroutine activeParryRoutine;
+        private Coroutine activeHitStopRoutine;
+        private Coroutine counterVisualRoutine;
+        private Vector3 originalScale = Vector3.one;
 
         // Animator Hashes
         private static readonly int SlashTrigger = Animator.StringToHash("Slash");
+        private static readonly int SlashStateHash = Animator.StringToHash("Slash");
+        private static readonly int UpSlashStateHash = Animator.StringToHash("UpSlash");
         private static readonly int PogoTrigger = Animator.StringToHash("Pogo");
         private static readonly int ParryTrigger = Animator.StringToHash("Parry");
         private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
@@ -80,9 +93,11 @@ namespace KernelKnight.Player
         {
             playerController = GetComponent<PlayerController>();
             inputHandler = GetComponent<PlayerInputHandler>();
+            healthController = GetComponent<PlayerHealthController>();
             rb = GetComponent<Rigidbody2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
+            originalScale = transform.localScale;
 
             if (targetLayers.value == 0) targetLayers = ~LayerMask.GetMask("Ignore Raycast", "Player");
             if (pogoLayers.value == 0) pogoLayers = ~LayerMask.GetMask("Ignore Raycast", "Player");
@@ -90,6 +105,7 @@ namespace KernelKnight.Player
 
         private void Update()
         {
+            if (healthController != null && healthController.IsDead) return;
             if (inputHandler == null) inputHandler = GetComponent<PlayerInputHandler>();
             if (playerController == null) playerController = GetComponent<PlayerController>();
 
@@ -186,7 +202,10 @@ namespace KernelKnight.Player
             {
                 animator.ResetTrigger(SlashTrigger);
                 animator.SetBool(IsAttackingHash, true);
-                animator.Play("Slash", 0, 0f);
+                int stateHash = (LastAttackDirection == AttackDirection.Up && animator.HasState(0, UpSlashStateHash))
+                    ? UpSlashStateHash
+                    : SlashStateHash;
+                animator.Play(stateHash, 0, 0f);
             }
 
             if (activeAttackRoutine != null) StopCoroutine(activeAttackRoutine);
@@ -222,8 +241,11 @@ namespace KernelKnight.Player
             {
                 animator.ResetTrigger(SlashTrigger);
                 animator.SetBool(IsAttackingHash, true);
-                animator.Play("Slash", 0, 0f);
+                animator.Play(SlashStateHash, 0, 0f);
             }
+
+            if (counterVisualRoutine != null) StopCoroutine(counterVisualRoutine);
+            counterVisualRoutine = StartCoroutine(CounterattackVisualPunchRoutine());
 
             if (activeAttackRoutine != null) StopCoroutine(activeAttackRoutine);
             activeAttackRoutine = StartCoroutine(PerformAttackHitboxRoutine(counterattackDamage, true));
@@ -232,6 +254,7 @@ namespace KernelKnight.Player
         private IEnumerator PerformAttackHitboxRoutine(float damage, bool isCounter)
         {
             isAttacking = true;
+            isCounterattacking = isCounter;
             alreadyHitColliders.Clear();
 
             try
@@ -255,7 +278,16 @@ namespace KernelKnight.Player
                                 float kbForce = isCounter ? counterattackKnockback : 3.5f;
                                 damageable.TakeDamage(damage, kbDir, kbForce);
 
-                                StartCoroutine(HitStop(isCounter ? 0.08f : 0.04f));
+                                // Horizontal recoil on forward slash for Hollow Knight-style spacing
+                                if (LastAttackDirection == AttackDirection.Forward && playerController != null)
+                                {
+                                    playerController.ApplyKnockback(
+                                        new Vector2(-playerController.FacingDirection * attackRecoilForce, rb.linearVelocity.y),
+                                        attackRecoilDuration);
+                                }
+
+                                OnAttackHitEnemy?.Invoke();
+                                TriggerHitStop(isCounter ? 0.08f : 0.04f);
                             }
                         }
                     }
@@ -263,10 +295,20 @@ namespace KernelKnight.Player
                     elapsed += Time.deltaTime;
                     yield return null;
                 }
+
+                // Keep Animator's IsAttacking true for the rest of the 6-frame Slash clip (~0.33s total)
+                // so Jump/Fall doesn't cut off the airborne slash animation early!
+                const float slashAnimDuration = 0.33f;
+                while (elapsed < slashAnimDuration && (playerController == null || !playerController.IsDashing))
+                {
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
             }
             finally
             {
                 isAttacking = false;
+                isCounterattacking = false;
                 if (animator != null) animator.SetBool(IsAttackingHash, false);
             }
         }
@@ -301,6 +343,7 @@ namespace KernelKnight.Player
                             if (damageable != null)
                             {
                                 damageable.TakeDamage(pogoDamage, Vector2.down, 0f);
+                                OnAttackHitEnemy?.Invoke();
                                 pogoSuccess = true;
                             }
 
@@ -308,10 +351,11 @@ namespace KernelKnight.Player
                             if (pogoSuccess && !hasPogoBouncedInCurrentAttack)
                             {
                                 hasPogoBouncedInCurrentAttack = true;
+                                rb.gravityScale = 1f;
                                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, pogoBounceForce);
                                 playerController.OnPogoSuccessful();
 
-                                StartCoroutine(HitStop(0.06f));
+                                TriggerHitStop(0.06f);
                                 Debug.Log($"<color=cyan><b>[POGO SUCCESS]</b> Bounced off {hit.name} with force {pogoBounceForce}!</color>");
                                 break;
                             }
@@ -325,6 +369,7 @@ namespace KernelKnight.Player
             finally
             {
                 isAttacking = false;
+                isCounterattacking = false;
                 if (animator != null) animator.SetBool(IsAttackingHash, false);
             }
         }
@@ -370,29 +415,29 @@ namespace KernelKnight.Player
                 animator.Play("Parry", 0, 0f);
             }
 
-            Color origColor = (spriteRenderer != null) ? Color.white : Color.white;
+            Color origColor = (spriteRenderer != null) ? spriteRenderer.color : Color.white;
 
             try
             {
                 // 1. Startup State (instant guard stance)
                 CurrentParryState = ParryState.Startup;
-                if (spriteRenderer != null) spriteRenderer.color = new Color(0.6f, 0.9f, 1f, 1f);
+                if (useParryColorTint && spriteRenderer != null) spriteRenderer.color = new Color(0.6f, 0.9f, 1f, 1f);
                 yield return new WaitForSeconds(parryStartupDuration);
 
-                // 2. Active Window (Radiant cyan parry flash & active parry detection)
+                // 2. Active Window (Active parry detection)
                 CurrentParryState = ParryState.Active;
-                if (spriteRenderer != null) spriteRenderer.color = new Color(0.15f, 1.0f, 1.0f, 1f);
+                if (useParryColorTint && spriteRenderer != null) spriteRenderer.color = new Color(0.15f, 1.0f, 1.0f, 1f);
                 yield return new WaitForSeconds(parryActiveDuration);
 
                 // 3. Recovery State (brief whiff recovery)
                 CurrentParryState = ParryState.Recovery;
-                if (spriteRenderer != null) spriteRenderer.color = new Color(0.85f, 0.85f, 0.95f, 1f);
+                if (useParryColorTint && spriteRenderer != null) spriteRenderer.color = new Color(0.85f, 0.85f, 0.95f, 1f);
                 yield return new WaitForSeconds(parryRecoveryDuration);
             }
             finally
             {
                 CurrentParryState = ParryState.Inactive;
-                if (spriteRenderer != null) spriteRenderer.color = origColor;
+                if (useParryColorTint && spriteRenderer != null) spriteRenderer.color = origColor;
                 if (animator != null) animator.SetBool(IsParryingHash, false);
             }
         }
@@ -428,13 +473,14 @@ namespace KernelKnight.Player
             OpenCounterattackWindow();
 
             // Hit stop & feedback
-            StartCoroutine(HitStop(0.1f));
+            TriggerHitStop(0.1f);
         }
 
         private void OpenCounterattackWindow()
         {
             IsCounterattackWindowOpen = true;
             CounterattackTimeRemaining = counterattackWindowDuration;
+            if (spriteRenderer != null) spriteRenderer.color = new Color(1f, 0.85f, 0.2f, 1f);
             Debug.Log($"<color=gold><b>[COUNTERATTACK WINDOW OPEN]</b> Window open for {counterattackWindowDuration}s. Press Attack to strike!</color>");
         }
 
@@ -442,14 +488,46 @@ namespace KernelKnight.Player
         {
             IsCounterattackWindowOpen = false;
             CounterattackTimeRemaining = 0f;
+            if (spriteRenderer != null) spriteRenderer.color = Color.white;
+        }
+
+        private IEnumerator CounterattackVisualPunchRoutine()
+        {
+            try
+            {
+                if (spriteRenderer != null) spriteRenderer.color = new Color(1f, 0.95f, 0.3f, 1f);
+                transform.localScale = originalScale * 1.18f;
+                yield return new WaitForSeconds(0.14f);
+            }
+            finally
+            {
+                transform.localScale = originalScale;
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = IsCounterattackWindowOpen ? new Color(1f, 0.85f, 0.2f, 1f) : Color.white;
+                }
+                counterVisualRoutine = null;
+            }
+        }
+
+        public void TriggerHitStop(float duration)
+        {
+            if (activeHitStopRoutine != null) StopCoroutine(activeHitStopRoutine);
+            activeHitStopRoutine = StartCoroutine(HitStop(duration));
         }
 
         private IEnumerator HitStop(float duration)
         {
-            float origScale = Time.timeScale;
-            Time.timeScale = 0.05f;
-            yield return new WaitForSecondsRealtime(duration);
-            Time.timeScale = origScale;
+            try
+            {
+                Time.timeScale = 0.05f;
+                yield return new WaitForSecondsRealtime(duration);
+            }
+            finally
+            {
+                Time.timeScale = 1f;
+                activeHitStopRoutine = null;
+            }
         }
         #endregion
 
@@ -462,9 +540,17 @@ namespace KernelKnight.Player
             // 1. Attack Hitbox Visualization
             if (isAttacking)
             {
-                Gizmos.color = (LastAttackDirection == AttackDirection.Pogo) ? Color.cyan : (IsCounterattackWindowOpen ? Color.yellow : Color.red);
-                GetAttackHitbox(out Vector2 c, out Vector2 s);
-                Gizmos.DrawWireCube(c, s);
+                if (LastAttackDirection == AttackDirection.Pogo)
+                {
+                    Gizmos.color = Color.cyan;
+                    Gizmos.DrawWireCube(origin + pogoHitboxOffset, pogoHitboxSize);
+                }
+                else
+                {
+                    Gizmos.color = (isCounterattacking || IsCounterattackWindowOpen) ? Color.yellow : Color.red;
+                    GetAttackHitbox(out Vector2 c, out Vector2 s);
+                    Gizmos.DrawWireCube(c, s);
+                }
             }
 
             // 2. Pogo Range

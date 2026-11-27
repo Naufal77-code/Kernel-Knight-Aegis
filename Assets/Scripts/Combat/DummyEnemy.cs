@@ -113,6 +113,16 @@ namespace KernelKnight.Combat
                             yield break; // Attack was parried!
                         }
                     }
+
+                    // Parry missed or inactive -> apply damage & knockback to Bit
+                    var playerDamageable = hit.GetComponent<IDamageable>();
+                    if (playerDamageable != null)
+                    {
+                        Vector2 kbDir = (hit.transform.position - transform.position).normalized;
+                        if (Mathf.Abs(kbDir.x) < 0.05f) kbDir.x = (hit.transform.position.x >= transform.position.x) ? 1f : -1f;
+                        playerDamageable.TakeDamage(attackDamage, kbDir, 7.5f);
+                        break;
+                    }
                 }
             }
 
@@ -174,7 +184,6 @@ namespace KernelKnight.Combat
 
         public bool OnPogoHit(Vector2 hitPoint)
         {
-            TakeDamage(20f, Vector2.down, 0f);
             StartCoroutine(PogoSquishRoutine());
             return true;
         }

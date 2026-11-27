@@ -21,6 +21,7 @@ namespace KernelKnight.Player
         public bool AttackPressed { get; private set; }
         public bool DashPressed { get; private set; }
         public bool ParryPressed { get; private set; }
+        public bool HealHeld { get; private set; }
 
         public bool IsLookingUp => RawVertical > 0.5f;
         public bool IsHoldingDown => RawVertical < -0.5f;
@@ -41,6 +42,7 @@ namespace KernelKnight.Player
             AttackPressed = false;
             DashPressed = false;
             ParryPressed = false;
+            HealHeld = false;
             RawHorizontal = 0f;
             RawVertical = 0f;
 
@@ -84,6 +86,13 @@ namespace KernelKnight.Player
                 if (kb.jKey.wasPressedThisFrame || kb.xKey.wasPressedThisFrame || kb.zKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame)
                 {
                     AttackPressed = true;
+                    kbmActive = true;
+                }
+
+                // Heal / Patching: Hold E or Q
+                if (kb.eKey.isPressed || kb.qKey.isPressed)
+                {
+                    HealHeld = true;
                     kbmActive = true;
                 }
             }
@@ -142,6 +151,9 @@ namespace KernelKnight.Player
 
                 // Parry: LB (Left Bumper / leftShoulder) - Specifically required!
                 if (pad.leftShoulder.wasPressedThisFrame) { ParryPressed = true; padActive = true; }
+
+                // Heal / Patching: Hold RB (Right Bumper / rightShoulder)
+                if (pad.rightShoulder.isPressed) { HealHeld = true; padActive = true; }
             }
 
             // Device switching tracking
@@ -158,6 +170,7 @@ namespace KernelKnight.Player
             AttackPressed = Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.J);
             DashPressed = Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
             ParryPressed = Input.GetKeyDown(KeyCode.F);
+            HealHeld = Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.Q);
 #endif
 
             MoveInput = new Vector2(RawHorizontal, RawVertical);

@@ -147,7 +147,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 177
+        width: 173
         height: 887
       alignment: 9
       pivot: {x: 0.5, y: 0.26719}
@@ -167,117 +167,7 @@ TextureImporter:
       name: POGO_1
       rect:
         serializedVersion: 2
-        x: 177
-        y: 0
-        width: 177
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 50bc6ae80cbc11870800000000000000
-      internalID: 8651920387042888453
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_2
-      rect:
-        serializedVersion: 2
-        x: 354
-        y: 0
-        width: 166
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 86feb1b11147bbe10800000000000000
-      internalID: 2214491258600812392
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_3
-      rect:
-        serializedVersion: 2
-        x: 520
-        y: 0
-        width: 183
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ca99e2ef565d5db70800000000000000
-      internalID: 8923272870737385900
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_4
-      rect:
-        serializedVersion: 2
-        x: 703
-        y: 0
-        width: 163
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a9dff6e174eabf3b0800000000000000
-      internalID: -5477592901289509478
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_5
-      rect:
-        serializedVersion: 2
-        x: 866
-        y: 0
-        width: 173
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 135897392ce4d5a50800000000000000
-      internalID: 6511447233852441905
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_6
-      rect:
-        serializedVersion: 2
-        x: 1039
+        x: 173
         y: 0
         width: 235
         height: 887
@@ -289,74 +179,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: df4e30d2970203600800000000000000
-      internalID: 445892067928040701
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_7
-      rect:
-        serializedVersion: 2
-        x: 1274
-        y: 0
-        width: 165
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4fc5ad611b096a920800000000000000
-      internalID: 3001245291956034804
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_8
-      rect:
-        serializedVersion: 2
-        x: 1439
-        y: 0
-        width: 161
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9e482f91f62c508d0800000000000000
-      internalID: -2880682604201081623
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: POGO_9
-      rect:
-        serializedVersion: 2
-        x: 1600
-        y: 0
-        width: 174
-        height: 887
-      alignment: 9
-      pivot: {x: 0.5, y: 0.26719}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ae57d7c61f2e84c80800000000000000
-      internalID: -8338165183541316118
+      spriteID: 50bc6ae80cbc11870800000000000000
+      internalID: 8651920387042888453
       vertices: []
       indices: 
       edges: []
