@@ -1,0 +1,282 @@
+fileFormatVersion: 2
+guid: e5ea33cd20f29d04399a39a07f7c83c1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4955035574640089888
+    second: UPSLASH_0
+  - first:
+      213: -5725841210632746402
+    second: UPSLASH_1
+  - first:
+      213: 7069682031565818629
+    second: UPSLASH_2
+  - first:
+      213: -1635129675741631381
+    second: UPSLASH_3
+  - first:
+      213: -4112717314369052096
+    second: UPSLASH_4
+  - first:
+      213: -8688915917714598661
+    second: UPSLASH_5
+  - first:
+      213: 6339334953314373239
+    second: UPSLASH_6
+  - first:
+      213: -2227766383277548443
+    second: UPSLASH_7
+  - first:
+      213: 4409649181674091412
+    second: UPSLASH_8
+  - first:
+      213: -4033391946895598210
+    second: UPSLASH_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 138.27
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: UPSLASH_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 278
+        height: 483
+      alignment: 9
+      pivot: {x: 0.56475, y: 0.02692}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02b98db2a92d3c440800000000000000
+      internalID: 4955035574640089888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UPSLASH_1
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 0
+        width: 320
+        height: 483
+      alignment: 9
+      pivot: {x: 0.4875, y: 0.02277}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5a41f771c9b980b0800000000000000
+      internalID: -5725841210632746402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UPSLASH_2
+      rect:
+        serializedVersion: 2
+        x: 598
+        y: 0
+        width: 367
+        height: 483
+      alignment: 9
+      pivot: {x: 0.55586, y: 0.0207}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50b4176d95e8c1260800000000000000
+      internalID: 7069682031565818629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UPSLASH_3
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 0
+        width: 295
+        height: 483
+      alignment: 9
+      pivot: {x: 0.68475, y: 0.02692}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6c68b3293ade49e0800000000000000
+      internalID: -1635129675741631381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UPSLASH_4
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 0
+        width: 259
+        height: 483
+      alignment: 9
+      pivot: {x: 0.58301, y: 0.02277}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0422f678461bce6c0800000000000000
+      internalID: -4112717314369052096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      UPSLASH_0: 4955035574640089888
+      UPSLASH_1: -5725841210632746402
+      UPSLASH_2: 7069682031565818629
+      UPSLASH_3: -1635129675741631381
+      UPSLASH_4: -4112717314369052096
+      UPSLASH_5: -8688915917714598661
+      UPSLASH_6: 6339334953314373239
+      UPSLASH_7: -2227766383277548443
+      UPSLASH_8: 4409649181674091412
+      UPSLASH_9: -4033391946895598210
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

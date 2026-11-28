@@ -12,7 +12,7 @@ namespace KernelKnight.Player
     {
         [Header("Cleanse-Needle (Basic Attack)")]
         [SerializeField] private float attackDamage = 20f;
-        [SerializeField] private float attackCooldown = 0.25f;
+        [SerializeField] private float attackCooldown = 0.45f;
         [SerializeField] private float attackActiveDuration = 0.16f;
         [SerializeField] private float attackRecoilForce = 3.5f;
         [SerializeField] private float attackRecoilDuration = 0.08f;
@@ -26,6 +26,7 @@ namespace KernelKnight.Player
 
         [Header("Pogo Slash")]
         [SerializeField] private float pogoDamage = 25f;
+        [SerializeField] private float pogoCooldown = 0.32f;
         [SerializeField] private float pogoBounceForce = 13.5f;
         [SerializeField] private Vector2 pogoHitboxSize = new Vector2(1.2f, 1.0f);
         [SerializeField] private Vector2 pogoHitboxOffset = new Vector2(0f, -0.2f);
@@ -69,8 +70,9 @@ namespace KernelKnight.Player
 
         private bool isAttacking;
         private bool isCounterattacking;
-        private float lastAttackTime;
-        private float lastParryTime;
+        private float lastAttackTime = -10f;
+        private float currentAttackCooldown;
+        private float lastParryTime = -10f;
         private float attackBufferCounter;
         private bool hasPogoBouncedInCurrentAttack;
         private readonly HashSet<Collider2D> alreadyHitColliders = new HashSet<Collider2D>();
@@ -171,7 +173,7 @@ namespace KernelKnight.Player
         {
             return (playerController == null || !playerController.IsDashing) &&
                    CurrentParryState != ParryState.Active &&
-                   Time.time >= lastAttackTime + attackCooldown;
+                   Time.time >= lastAttackTime + currentAttackCooldown;
         }
 
         private bool CanParry()
@@ -184,6 +186,7 @@ namespace KernelKnight.Player
         private void ExecuteBasicAttack()
         {
             lastAttackTime = Time.time;
+            currentAttackCooldown = attackCooldown;
 
             if (inputHandler.IsLookingUp)
             {
@@ -215,6 +218,7 @@ namespace KernelKnight.Player
         private void ExecutePogoSlash()
         {
             lastAttackTime = Time.time;
+            currentAttackCooldown = pogoCooldown;
             LastAttackDirection = AttackDirection.Pogo;
             hasPogoBouncedInCurrentAttack = false;
 
@@ -235,6 +239,7 @@ namespace KernelKnight.Player
             CloseCounterattackWindow();
 
             lastAttackTime = Time.time;
+            currentAttackCooldown = attackCooldown;
             LastAttackDirection = AttackDirection.Forward;
 
             if (animator != null)
@@ -296,10 +301,10 @@ namespace KernelKnight.Player
                     yield return null;
                 }
 
-                // Keep Animator's IsAttacking true for the rest of the 6-frame Slash clip (~0.33s total)
-                // so Jump/Fall doesn't cut off the airborne slash animation early!
-                const float slashAnimDuration = 0.33f;
-                while (elapsed < slashAnimDuration && (playerController == null || !playerController.IsDashing))
+                // Keep Animator's IsAttacking true for the rest of the Slash/UpSlash clip
+                // so Jump/Fall doesn't cut off the airborne attack animation early!
+                float animDuration = (LastAttackDirection == AttackDirection.Up) ? 0.50f : 0.33f;
+                while (elapsed < animDuration && (playerController == null || !playerController.IsDashing))
                 {
                     elapsed += Time.deltaTime;
                     yield return null;
@@ -362,6 +367,15 @@ namespace KernelKnight.Player
                         }
                     }
 
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+
+                // Keep Animator's IsAttacking true for the rest of the 4-frame Bit_Pogo clip (~0.28s @ 14 FPS)
+                // so Any State -> Jump/Fall doesn't cut off Frame 3 (shockwave) and Frame 4 (rebound) early.
+                const float pogoAnimDuration = 0.28f;
+                while (elapsed < pogoAnimDuration && (playerController == null || !playerController.IsDashing))
+                {
                     elapsed += Time.deltaTime;
                     yield return null;
                 }

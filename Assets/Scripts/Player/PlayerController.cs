@@ -28,7 +28,7 @@ namespace KernelKnight.Player
         [Header("Dash (Packet-Hop)")]
         [SerializeField] private float dashSpeed = 22f;
         [SerializeField] private float dashDuration = 0.28f;
-        [SerializeField] private float dashCooldown = 0.15f;
+        [SerializeField] private float dashCooldown = 0.60f;
         [SerializeField] private bool isInvulnerableDuringDash = false;
 
         [Header("Ground Detection")]

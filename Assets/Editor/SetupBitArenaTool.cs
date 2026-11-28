@@ -13,7 +13,7 @@ namespace KernelKnight.Editor
     [InitializeOnLoad]
     public static class SetupBitArenaTool
     {
-        private const string PrefKey = "BitArena_Setup_V40";
+        private const string PrefKey = "BitArena_Setup_V48";
 
         // Exact cut boundaries at the empty transparent gaps between characters (trimmed to used frames only)
         private static readonly Dictionary<string, int[]> PreciseCuts = new Dictionary<string, int[]>
@@ -27,7 +27,8 @@ namespace KernelKnight.Editor
             { "JUMP.png", new int[] { 0, 202, 413, 623, 835 } },
             { "LAND.png", new int[] { 0, 236, 452, 680, 899, 1099, 1307, 1530, 1731, 1941, 2172 } },
             { "LOOKUP.png", new int[] { 0, 256, 488, 707, 919, 1139, 1348, 1556, 1767, 1964, 2172 } },
-            { "POGO.png", new int[] { 0, 173, 408 } },
+            { "PARRY.png", new int[] { 0, 269, 618, 903, 1284 } },
+            { "POGO.png", new int[] { 0, 238, 595, 949, 1245 } },
             { "RUN.png", new int[] { 0, 248, 468, 683, 896, 1114, 1328, 1547, 1755, 1951, 2172 } },
             { "SLASH.png", new int[] { 0, 179, 426, 628, 778 } },
             { "SLASHSTART.png", new int[] { 0, 892 } },
@@ -36,6 +37,7 @@ namespace KernelKnight.Editor
             { "SLASH_4.png", new int[] { 0, 1184 } },
             { "SLASHEND.png", new int[] { 0, 2280 } },
             { "SLASH_6.png", new int[] { 0, 694 } },
+            { "UPSLASH.png", new int[] { 0, 278, 598, 965, 1260, 1519 } },
             { "WALK.png", new int[] { 0, 190, 373, 532, 711, 877, 1057, 1220, 1394, 1569, 1774 } }
         };
 
@@ -75,7 +77,17 @@ namespace KernelKnight.Editor
 
         private static readonly Dictionary<string, float[]> FeetPivotYPerFrame = new Dictionary<string, float[]>
         {
-            { "JUMP.png", new float[] { 0.28039f, 0.38674f, 0.49586f, 0.54834f } }
+            { "JUMP.png", new float[] { 0.28039f, 0.38674f, 0.49586f, 0.54834f } },
+            { "PARRY.png", new float[] { 0.01193f, 0.01193f, 0.00955f, 0.01193f } },
+            { "POGO.png", new float[] { 0.45589f, 0.29738f, 0.30505f, 0.37925f } },
+            { "UPSLASH.png", new float[] { 0.02692f, 0.02277f, 0.02070f, 0.02692f, 0.02277f } }
+        };
+
+        private static readonly Dictionary<string, float[]> FeetPivotXPerFrame = new Dictionary<string, float[]>
+        {
+            { "PARRY.png", new float[] { 0.56134f, 0.47135f, 0.53158f, 0.55512f } },
+            { "POGO.png", new float[] { 0.64538f, 0.54902f, 0.53136f, 0.74932f } },
+            { "UPSLASH.png", new float[] { 0.56475f, 0.48750f, 0.55586f, 0.68475f, 0.58301f } }
         };
 
         // Adaptive PPU to ensure Bit's world-space character size is 100% uniform across ALL actions
@@ -96,16 +108,18 @@ namespace KernelKnight.Editor
             { "SLASH_4.png", 249f },
             { "SLASHEND.png", 477f },
             { "SLASH_6.png", 252f },
+            { "UPSLASH.png", 138.27f },
+            { "PARRY.png", 168.37f },
             { "DASH.png", 62f },
             { "HURT.png", 71.3f },
-            { "POGO.png", 73.3f },
+            { "POGO.png", 162.82f },
             { "WALK.png", 69.2f }
         };
 
         private static readonly string[] BitFiles = {
             "DASH.png", "DEATH.png", "FALL.png", "HEAL.png", "HURT.png",
             "IDLE.png", "JUMP.png", "JUMP1.png", "LAND.png", "LOOKUP.png",
-            "POGO.png", "RUN.png", "SLASH.png", "SLASHSTART.png", "SLASH_2.png", "SLASH 1.png", "SLASH_4.png", "SLASHEND.png", "SLASH_6.png", "WALK.png"
+            "PARRY.png", "POGO.png", "RUN.png", "SLASH.png", "SLASHSTART.png", "SLASH_2.png", "SLASH 1.png", "SLASH_4.png", "SLASHEND.png", "SLASH_6.png", "UPSLASH.png", "WALK.png"
         };
 
         static SetupBitArenaTool()
@@ -246,18 +260,20 @@ namespace KernelKnight.Editor
                 ? slashList.ToArray()
                 : ((rawSlash != null && rawSlash.Length >= 4) ? new Sprite[] { rawSlash[1], rawSlash[2], rawSlash[3] } : rawSlash);
             var slashClip  = CreateAnimationClip("Bit_Slash", slashSprites, 18f, false);
+            var upSlashClip = CreateAnimationClip("Bit_UpSlash", spriteDict.GetValueOrDefault("UPSLASH"), 10f, false);
 
-            var pogoClip   = CreateAnimationClip("Bit_Pogo", spriteDict.GetValueOrDefault("POGO"), 16f, false);
+            var pogoClip   = CreateAnimationClip("Bit_Pogo", spriteDict.GetValueOrDefault("POGO"), 14f, false);
 
-            // Defensive Parry guard stance (Bit raises needle ready in front)
-            Sprite[] parrySprites = (rawSlash != null && rawSlash.Length >= 1)
-                ? new Sprite[] { rawSlash[0] }
-                : rawSlash;
-            var parryClip  = CreateAnimationClip("Bit_Parry", parrySprites, 8f, false);
+            // Defensive Parry guard stance (4-frame PARRY.png preferred, fallback to SLASH_0)
+            var rawParry = spriteDict.GetValueOrDefault("PARRY");
+            Sprite[] parrySprites = (rawParry != null && rawParry.Length > 0)
+                ? rawParry
+                : ((rawSlash != null && rawSlash.Length >= 1) ? new Sprite[] { rawSlash[0] } : rawSlash);
+            var parryClip  = CreateAnimationClip("Bit_Parry", parrySprites, 15f, false);
 
             var jump1Clip  = CreateAnimationClip("Bit_Jump1", spriteDict.GetValueOrDefault("JUMP1"), 12f, false);
             var landClip   = CreateAnimationClip("Bit_Land", spriteDict.GetValueOrDefault("LAND"), 14f, false);
-            var lookupClip = CreateAnimationClip("Bit_LookUp", spriteDict.GetValueOrDefault("LOOKUP"), 10f, true);
+            var lookupClip = CreateAnimationClip("Bit_LookUp", spriteDict.GetValueOrDefault("LOOKUP"), 14f, false);
             var healClip   = CreateAnimationClip("Bit_Heal", spriteDict.GetValueOrDefault("HEAL"), 10f, true);
             var hurtClip   = CreateAnimationClip("Bit_Hurt", spriteDict.GetValueOrDefault("HURT"), 24f, false);
             var deathClip  = CreateAnimationClip("Bit_Death", spriteDict.GetValueOrDefault("DEATH"), 6f, false);
@@ -291,6 +307,7 @@ namespace KernelKnight.Editor
             var landState   = sm.AddState("Land");   landState.motion = landClip;
             var dashState   = sm.AddState("Dash");   dashState.motion = dashClip;
             var slashState  = sm.AddState("Slash");  slashState.motion = slashClip;
+            var upSlashState = sm.AddState("UpSlash"); upSlashState.motion = upSlashClip;
             var pogoState   = sm.AddState("Pogo");   pogoState.motion = pogoClip;
             var parryState  = sm.AddState("Parry");  parryState.motion = parryClip;
             var healState   = sm.AddState("Heal");   healState.motion = healClip;
@@ -353,12 +370,28 @@ namespace KernelKnight.Editor
             any2Slash.canTransitionToSelf = true;
             any2Slash.AddCondition(AnimatorConditionMode.If, 0, "Slash");
 
-            var slash2Idle = slashState.AddTransition(idleState);
-            slash2Idle.hasExitTime = true; slash2Idle.exitTime = 0.95f; slash2Idle.duration = 0f;
-
             var slash2Run = slashState.AddTransition(runState);
             slash2Run.hasExitTime = true; slash2Run.exitTime = 0.95f; slash2Run.duration = 0f;
             slash2Run.AddCondition(AnimatorConditionMode.Greater, 0.1f, "Speed");
+
+            var slash2Idle = slashState.AddTransition(idleState);
+            slash2Idle.hasExitTime = true; slash2Idle.exitTime = 0.95f; slash2Idle.duration = 0f;
+            slash2Idle.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
+
+            // UpSlash (Cleanse-Needle Upward - conditional transitions before Idle fallback)
+            var upSlash2Run = upSlashState.AddTransition(runState);
+            upSlash2Run.hasExitTime = true; upSlash2Run.exitTime = 0.95f; upSlash2Run.duration = 0f;
+            upSlash2Run.AddCondition(AnimatorConditionMode.Greater, 0.1f, "Speed");
+
+            var upSlash2Lookup = upSlashState.AddTransition(lookupState);
+            upSlash2Lookup.hasExitTime = true; upSlash2Lookup.exitTime = 0.95f; upSlash2Lookup.duration = 0f;
+            upSlash2Lookup.AddCondition(AnimatorConditionMode.If, 0, "IsLookingUp");
+            upSlash2Lookup.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
+
+            var upSlash2Idle = upSlashState.AddTransition(idleState);
+            upSlash2Idle.hasExitTime = true; upSlash2Idle.exitTime = 0.95f; upSlash2Idle.duration = 0f;
+            upSlash2Idle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsLookingUp");
+            upSlash2Idle.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
 
             // Pogo Slash - Super responsive!
             var any2Pogo = sm.AddAnyStateTransition(pogoState);
@@ -386,6 +419,10 @@ namespace KernelKnight.Editor
             var lookup2I = lookupState.AddTransition(idleState);
             lookup2I.hasExitTime = false; lookup2I.duration = 0f;
             lookup2I.AddCondition(AnimatorConditionMode.IfNot, 0, "IsLookingUp");
+
+            var lookup2Run = lookupState.AddTransition(runState);
+            lookup2Run.hasExitTime = false; lookup2Run.duration = 0f;
+            lookup2Run.AddCondition(AnimatorConditionMode.Greater, 0.1f, "Speed");
 
             // Heal (Patching)
             var i2Heal = idleState.AddTransition(healState);
@@ -436,7 +473,8 @@ namespace KernelKnight.Editor
             importer.alphaIsTransparency = true;
 
             int[] cuts = PreciseCuts.ContainsKey(fileName) ? PreciseCuts[fileName] : null;
-            float pivotX = FeetPivotX.ContainsKey(fileName) ? FeetPivotX[fileName] : 0.5f;
+            float defaultPivotX = FeetPivotX.ContainsKey(fileName) ? FeetPivotX[fileName] : 0.5f;
+            float[] perFramePivotX = FeetPivotXPerFrame.ContainsKey(fileName) ? FeetPivotXPerFrame[fileName] : null;
             float defaultPivotY = FeetPivotY.ContainsKey(fileName) ? FeetPivotY[fileName] : 0.5f;
             float[] perFramePivotY = FeetPivotYPerFrame.ContainsKey(fileName) ? FeetPivotYPerFrame[fileName] : null;
             string baseName = Path.GetFileNameWithoutExtension(path);
@@ -448,6 +486,7 @@ namespace KernelKnight.Editor
                 int x0 = (cuts != null) ? cuts[i] : Mathf.RoundToInt(i * (width / 10f));
                 int x1 = (cuts != null) ? cuts[i + 1] : Mathf.RoundToInt((i + 1) * (width / 10f));
                 int w = x1 - x0;
+                float px = (perFramePivotX != null && i < perFramePivotX.Length) ? perFramePivotX[i] : defaultPivotX;
                 float py = (perFramePivotY != null && i < perFramePivotY.Length) ? perFramePivotY[i] : defaultPivotY;
 
                 var meta = new SpriteMetaData
@@ -455,7 +494,7 @@ namespace KernelKnight.Editor
                     name = $"{baseName}_{i}",
                     rect = new Rect(x0, 0, w, height),
                     alignment = (int)SpriteAlignment.Custom,
-                    pivot = new Vector2(pivotX, py)
+                    pivot = new Vector2(px, py)
                 };
                 metaList.Add(meta);
             }
